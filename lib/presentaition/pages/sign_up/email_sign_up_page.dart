@@ -94,7 +94,7 @@ class _EmailSignUpPageState extends State<EmailSignUpPage> {
           Center(
             child: GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const PassSignUpPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const PassSignUpPage()));
               },
               child: Container(
                 width: 84.w,

@@ -5,7 +5,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.1 <4.0.0'
+  sdk: '>=3.3.1 <4.0.0'
 
 dependencies:
   flutter:
@@ -13,9 +13,9 @@ dependencies:
 
   cupertino_icons: ^1.0.6
   flutter_bloc: ^8.1.6
-  firebase_core: ^3.5.0
-  firebase_auth: ^5.3.0
-  cloud_firestore: ^5.4.2
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
   get_it: ^8.0.0
   dartz: ^0.10.1
   just_audio: ^0.9.40
@@ -25,13 +25,14 @@ dependencies:
   freezed_annotation: ^2.4.4
   flutter_screenutil: ^5.9.3
   gap: ^3.0.1
+  spotify: ^0.13.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^3.0.0
-  build_runner: ^2.4.10
+  build_runner:
 
 flutter:
 
@@ -39,7 +40,6 @@ flutter:
 
   assets:
     - assets/icons/
-    - assets/images/
 
   # fonts:
   #   - family: Schyler
