@@ -1,12 +1,13 @@
-import 'dart:async';
-
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify_clone/timer/token_manager.dart';
 
 import 'presentaition/pages/splash/splash_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -22,12 +23,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     final tokenManager = TokenManager();
     tokenManager.startFetchingToken();
-
-    // Dừng sau 3 giờ (180 phút) nếu cần:
-    Timer(const Duration(hours: 3), () {
-      tokenManager.stopFetchingToken();
-      print('Stopped fetching token.');
-    });
     super.initState();
   }
 

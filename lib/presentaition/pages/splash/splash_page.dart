@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spotify_clone/presentaition/pages/login_page/auth_main.dart';
 
 import '../../../core/config/app_icons.dart';
-import '../login_page/get_started_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => const GetStartedPage()
+        builder: (BuildContext context) => const AuthMain()
       )
     );
   }

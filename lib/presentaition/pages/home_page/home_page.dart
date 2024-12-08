@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_clone/core/config/app_constant.dart';
@@ -33,7 +36,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Text('Home Page'),
+          child: GestureDetector(
+              onTap: () async {
+                Timer(const Duration(seconds: 3), () {
+                  final tokenManager = TokenManager();
+                  tokenManager.stopFetchingToken();
+                });
+                await FirebaseAuth.instance.signOut();
+              },
+              child: Text('Home Page')),
         ),
       ),
     );

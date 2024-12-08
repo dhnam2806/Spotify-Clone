@@ -1,10 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
+import 'package:spotify_clone/presentaition/pages/login_page/auth_main.dart';
 import 'package:spotify_clone/presentaition/pages/sign_up/components/text_field_widget.dart';
-
-import 'pass_sign_up_page.dart';
 
 class EmailSignUpPage extends StatefulWidget {
   const EmailSignUpPage({super.key});
@@ -93,8 +93,12 @@ class _EmailSignUpPageState extends State<EmailSignUpPage> {
           hPad24,
           Center(
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const PassSignUpPage()));
+              onTap: () async {
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: emailController.text,
+                  password: passController.text,
+                );
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AuthMain()));
               },
               child: Container(
                 width: 84.w,
