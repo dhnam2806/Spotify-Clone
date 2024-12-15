@@ -1,16 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
+import 'package:spotify_clone/presentaition/pages/authen/auth_main.dart';
+import 'package:spotify_clone/presentaition/pages/authen/components/text_field_widget.dart';
 
-class PassSignUpPage extends StatefulWidget {
-  const PassSignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<PassSignUpPage> createState() => _PassSignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _PassSignUpPageState extends State<PassSignUpPage> {
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -47,34 +51,34 @@ class _PassSignUpPageState extends State<PassSignUpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Create a password',
+                  'What\'s your email?',
                   style: TextStyle(
-                    fontSize: 20.sp,
+                    fontSize: 18.sp,
                     color: AppColors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 hPad12,
-                TextField(
-                  controller: passController,
+                TextFieldWidget(controller: emailController, hintText: 'Email'),
+                hPad4,
+                Text(
+                  'You\'ll need to confirm this email later.',
                   style: TextStyle(
+                    fontSize: 10.sp,
                     color: AppColors.white,
-                    fontSize: 16.sp,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    hintStyle: TextStyle(
-                      color: AppColors.gray,
-                      fontSize: 16.sp,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.grayTextField,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: BorderSide.none,
-                    ),
                   ),
                 ),
+                hPad12,
+                Text(
+                  'Create a password',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: AppColors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                hPad12,
+                TextFieldWidget(controller: passController, hintText: 'Password'),
                 hPad4,
                 Text(
                   'Use atleast 8 characters.',
@@ -89,8 +93,12 @@ class _PassSignUpPageState extends State<PassSignUpPage> {
           hPad24,
           Center(
             child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const PassSignUpPage()));
+              onTap: () async {
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: emailController.text,
+                  password: passController.text,
+                );
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AuthMain()));
               },
               child: Container(
                 width: 84.w,

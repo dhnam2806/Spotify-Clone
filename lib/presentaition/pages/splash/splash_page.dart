@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spotify_clone/presentaition/pages/login_page/auth_main.dart';
+import 'package:spotify_clone/presentaition/pages/authen/auth_main.dart';
 
 import '../../../core/config/app_icons.dart';
 

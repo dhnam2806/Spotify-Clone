@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
+import 'package:spotify_clone/presentaition/pages/authen/sign_up/sign_up_page.dart';
 import 'package:spotify_clone/presentaition/pages/home_page/home_page.dart';
-import 'package:spotify_clone/presentaition/pages/sign_up/email_sign_up_page.dart';
+import 'package:spotify_clone/presentaition/pages/authen/login/login_page.dart';
 
 import '../../../core/config/app_icons.dart';
 import 'components/continue_button_widget.dart';
@@ -32,7 +33,7 @@ class GetStartedPage extends StatelessWidget {
             hPad24,
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const EmailSignUpPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const SignUpPage()));
               },
               child: Container(
                 width: 337.w,
@@ -66,8 +67,7 @@ class GetStartedPage extends StatelessWidget {
             hPad4,
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()));
-                print("Login");
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginPage()));
               },
               child: Container(
                 width: 337.w,
