@@ -29,6 +29,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   gap: ^3.0.1
   spotify: ^0.13.7
+  persistent_bottom_nav_bar_v2:
 
 dev_dependencies:
   flutter_test:
