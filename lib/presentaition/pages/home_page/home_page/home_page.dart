@@ -11,6 +11,8 @@ import 'package:spotify_clone/core/config/app_constant.dart';
 import 'package:spotify_clone/core/config/app_icons.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
 import 'package:spotify_clone/presentaition/pages/components/album_widget.dart';
+import 'package:spotify_clone/presentaition/pages/components/music_widget.dart';
+import 'package:spotify_clone/presentaition/pages/components/recommend_widget.dart';
 import 'package:spotify_clone/timer/token_manager.dart';
 
 class HomePage extends StatefulWidget {
@@ -58,6 +60,7 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -80,30 +83,45 @@ class _HomePageState extends State<HomePage> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  AlbumWidget(nameAlbum: 'Liked Songs'),
-                  AlbumWidget(nameAlbum: 'Chúng ta không thuộc về nhau'),
-                  AlbumWidget(nameAlbum: 'Có chàng trai viết lên cây'),
-                  AlbumWidget(nameAlbum: 'Đừng làm trái tim anh đau'),
+                  RecommendWidget(nameAlbum: 'Liked Songs'),
+                  RecommendWidget(nameAlbum: 'Chúng ta không thuộc về nhau'),
+                  RecommendWidget(nameAlbum: 'Có chàng trai viết lên cây'),
+                  RecommendWidget(nameAlbum: 'Đừng làm trái tim anh đau'),
                 ],
               ),
               hPad12,
-              Text('Recently played',
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.white)),
-              // GestureDetector(
-              //     onTap: () async {
-              //       Timer(const Duration(seconds: 3), () {
-              //         final tokenManager = TokenManager();
-              //         tokenManager.stopFetchingToken();
-              //       });
-              //       await FirebaseAuth.instance.signOut();
-              //     },
-              //     child: const Text('Home Page')),
-              // hPad8,
-              // GestureDetector(
-              //     onTap: () {
-              //       fetchData();
-              //     },
-              //     child: const Text('Welcome to Spotify Clone')),
+              Text(
+                'Recently played',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.white),
+              ),
+              hPad12,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    AlbumWidget(
+                      title: 'Có chàng trai viết lên cây',
+                      subTitle: 'Phan Mạnh Quỳnh',
+                    ),
+                    wPad10,
+                    AlbumWidget(
+                      title: 'Chúng ta không thuộc về nhau',
+                      subTitle: 'Sơn Tùng M-TP',
+                    ),
+                    wPad10,
+                    AlbumWidget(
+                      title: 'Đừng làm trái tim anh đau',
+                      subTitle: 'Sơn Tùng M-TP',
+                    ),
+                    wPad10,
+                    AlbumWidget(
+                      subTitle: 'Andiez, BigDaddy, Touliver, Wowy, RPT MCK, Tlinh và nhiều hơn nữa',
+                    ),
+                  ],
+                ),
+              ),
+              hPad12,
+              MusicWidget(),
             ],
           ),
         ),

@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
 import 'package:spotify_clone/presentaition/pages/authen/sign_up/sign_up_page.dart';
-import 'package:spotify_clone/presentaition/pages/home_page/home_page.dart';
+import 'package:spotify_clone/presentaition/pages/home_page/home_page/home_page.dart';
 import 'package:spotify_clone/presentaition/pages/authen/login/login_page.dart';
 
 import '../../../core/config/app_icons.dart';

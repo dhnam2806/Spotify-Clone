@@ -30,6 +30,7 @@ dependencies:
   gap: ^3.0.1
   spotify: ^0.13.7
   persistent_bottom_nav_bar_v2:
+  modal_bottom_sheet: 
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +45,7 @@ flutter:
 
   assets:
     - assets/icons/
+    - assets/images/
 
   # fonts:
   #   - family: Schyler
