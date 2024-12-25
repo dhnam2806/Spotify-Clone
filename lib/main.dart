@@ -19,11 +19,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   @override
   void initState() {
     final tokenManager = TokenManager();
-    tokenManager.startFetchingToken();
+    // tokenManager.startFetchingToken();
     super.initState();
   }
 

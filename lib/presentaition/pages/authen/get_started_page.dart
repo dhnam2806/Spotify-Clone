@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
+import 'package:spotify_clone/presentaition/pages/authen/auth_main.dart';
 import 'package:spotify_clone/presentaition/pages/authen/sign_up/sign_up_page.dart';
 import 'package:spotify_clone/presentaition/pages/home_page/home_page/home_page.dart';
 import 'package:spotify_clone/presentaition/pages/authen/login/login_page.dart';
@@ -52,18 +55,12 @@ class GetStartedPage extends StatelessWidget {
             ),
             hPad12,
             ContinueButtonWidget(
-              text: 'Continue with Facebook',
-              icon: AppIcons.icFacebook,
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
-              },
-            ),
-            hPad12,
-            ContinueButtonWidget(
-              text: 'Continue with Google',
-              icon: AppIcons.icGoogle,
-              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage())),
-            ),
+                text: 'Continue with Google',
+                icon: AppIcons.icGoogle,
+                onPressed: () async {
+                  await signInWithGoogle();
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthMain()));
+                }),
             hPad4,
             GestureDetector(
               onTap: () {
@@ -84,5 +81,22 @@ class GetStartedPage extends StatelessWidget {
         ),
       ),
     ));
+  }
+
+  signInWithGoogle() async {
+    try {
+      final googleSignInAccount = await GoogleSignIn().signIn();
+      if (googleSignInAccount == null) {
+        return;
+      }
+      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      return await FirebaseAuth.instance.signInWithCredential(authCredential);
+    } catch (e) {
+      print(e);
+    }
   }
 }

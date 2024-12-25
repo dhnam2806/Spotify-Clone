@@ -9,4 +9,7 @@ class AppIcons {
 
 class AppImages {
   static const String imgAlbum = 'assets/images/img_album.png';
+  static const String imgSong = 'assets/images/img_song.png';
+  static const String imgLiked = 'assets/images/liked_song.png';
+  static const String imgLogo = 'assets/images/img_logo.png';
 }

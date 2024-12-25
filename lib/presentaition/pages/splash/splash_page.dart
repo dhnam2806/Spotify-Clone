@@ -12,7 +12,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   @override
   void initState() {
     super.initState();
@@ -23,20 +22,18 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: SvgPicture.asset(
-          AppIcons.icSpotifyLogo,
-        )
-      ),
+          child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(image: AssetImage(AppImages.imgLogo)),
+        ),
+      )),
     );
   }
 
   Future<void> redirect() async {
     await Future.delayed(const Duration(seconds: 3));
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => const AuthMain()
-      )
-    );
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const AuthMain()));
   }
 }
