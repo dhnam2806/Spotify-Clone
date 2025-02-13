@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:spotify_clone/core/config/app_constant.dart';
 
+String? token;
+
 class TokenManager {
-  String token =
-      'BQCxqAkxvZqUeZUxQme7UIAlf29tylpAzHrPSjYC8yjEoYvEkcUZW88VfAAl6CxZStkVxIZ-xIjeF_p8KDTMskmOgSw3OIeEtya6I1o5oA1AhPh_hB0';
   Timer? _timer;
 
   // Hàm để lấy access_token từ API

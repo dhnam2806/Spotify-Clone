@@ -11,6 +11,7 @@ class TextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      obscureText: hintText == 'Mật khẩu' ? true : false,
       controller: controller,
       style: TextStyle(
         color: AppColors.white,

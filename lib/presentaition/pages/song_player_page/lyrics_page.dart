@@ -21,12 +21,9 @@ class LyricsPage extends StatefulWidget {
 class _LyricsPageState extends State<LyricsPage> {
   List<Lyric>? lyrics;
   final ItemScrollController itemScrollController = ItemScrollController();
-  final ScrollOffsetController scrollOffsetController =
-      ScrollOffsetController();
-  final ItemPositionsListener itemPositionsListener =
-      ItemPositionsListener.create();
-  final ScrollOffsetListener scrollOffsetListener =
-      ScrollOffsetListener.create();
+  final ScrollOffsetController scrollOffsetController = ScrollOffsetController();
+  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final ScrollOffsetListener scrollOffsetListener = ScrollOffsetListener.create();
   StreamSubscription? streamSubscription;
 
   @override
@@ -39,14 +36,11 @@ class _LyricsPageState extends State<LyricsPage> {
   void initState() {
     streamSubscription = widget.player.onPositionChanged.listen((duration) {
       DateTime dt = DateTime(1970, 1, 1).copyWith(
-          hour: duration.inHours,
-          minute: duration.inMinutes.remainder(60),
-          second: duration.inSeconds.remainder(60));
-      if(lyrics != null) {
+          hour: duration.inHours, minute: duration.inMinutes.remainder(60), second: duration.inSeconds.remainder(60));
+      if (lyrics != null) {
         for (int index = 0; index < lyrics!.length; index++) {
           if (index > 4 && lyrics![index].timeStamp.isAfter(dt)) {
-            itemScrollController.scrollTo(
-                index: index - 3, duration: const Duration(milliseconds: 600));
+            itemScrollController.scrollTo(index: index - 3, duration: const Duration(milliseconds: 600));
             break;
           }
         }
@@ -58,8 +52,7 @@ class _LyricsPageState extends State<LyricsPage> {
       String data = response.body;
       lyrics = data
           .split('\n')
-          .map((e) => Lyric(e.split(' ').sublist(1).join(' '),
-              DateFormat("[mm:ss.SS]").parse(e.split(' ')[0])))
+          .map((e) => Lyric(e.split(' ').sublist(1).join(' '), DateFormat("[mm:ss.SS]").parse(e.split(' ')[0])))
           .toList();
       setState(() {});
     });
@@ -74,16 +67,14 @@ class _LyricsPageState extends State<LyricsPage> {
           ? SafeArea(
               bottom: false,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0)
-                    .copyWith(top: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 20),
                 child: StreamBuilder<Duration>(
                     stream: widget.player.onPositionChanged,
                     builder: (context, snapshot) {
                       return ScrollablePositionedList.builder(
                         itemCount: lyrics!.length,
                         itemBuilder: (context, index) {
-                          Duration duration =
-                              snapshot.data ?? const Duration(seconds: 0);
+                          Duration duration = snapshot.data ?? const Duration(seconds: 0);
                           DateTime dt = DateTime(1970, 1, 1).copyWith(
                               hour: duration.inHours,
                               minute: duration.inMinutes.remainder(60),
@@ -93,9 +84,7 @@ class _LyricsPageState extends State<LyricsPage> {
                             child: Text(
                               lyrics![index].words,
                               style: TextStyle(
-                                color: lyrics![index].timeStamp.isAfter(dt)
-                                    ? Colors.white38
-                                    : Colors.white,
+                                color: lyrics![index].timeStamp.isAfter(dt) ? Colors.white38 : Colors.white,
                                 fontSize: 26,
                                 fontWeight: FontWeight.bold,
                               ),

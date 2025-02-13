@@ -1,17 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
-import 'package:spotify_clone/presentaition/pages/authen/auth_main.dart';
+import 'package:spotify_clone/presentaition/bloc/authentication_bloc/bloc/authentication_bloc.dart';
+import 'package:spotify_clone/presentaition/bloc/sign_up_bloc/bloc/sign_up_bloc.dart';
+import 'package:spotify_clone/presentaition/pages/app_view.dart';
 import 'package:spotify_clone/presentaition/pages/authen/sign_up/sign_up_page.dart';
-import 'package:spotify_clone/presentaition/pages/home_page/home_page/home_page.dart';
 import 'package:spotify_clone/presentaition/pages/authen/login/login_page.dart';
 
 import '../../../core/config/app_icons.dart';
+import '../../bloc/sign_in_bloc/bloc/sign_in_bloc.dart';
 import 'components/continue_button_widget.dart';
 
 class GetStartedPage extends StatelessWidget {
@@ -30,13 +32,20 @@ class GetStartedPage extends StatelessWidget {
             SvgPicture.asset(AppIcons.icLogo),
             hPad24,
             const Text(
-              'Millions of Songs.\n  Free on Spotify.',
+              '   Hàng triệu bài hát.\n Miễn phí trên Muzik.',
               style: TextStyle(color: AppColors.white, fontSize: 28, fontWeight: FontWeight.bold),
             ),
             hPad24,
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const SignUpPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                              create: (context) =>
+                                  SignUpBloc(userRepository: context.read<AuthenticationBloc>().userRepository),
+                              child: const SignUpPage(),
+                            )));
               },
               child: Container(
                 width: 337.w,
@@ -48,35 +57,57 @@ class GetStartedPage extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: const Text(
-                  'Sign up free',
+                  'Đăng ký',
                   style: TextStyle(color: AppColors.black, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
             hPad12,
+            BlocProvider(
+              create: (context) => SignUpBloc(userRepository: context.read<AuthenticationBloc>().userRepository),
+              child: BlocBuilder<SignUpBloc, SignUpState>(
+                builder: (context, state) {
+                  return ContinueButtonWidget(
+                      text: 'Tiếp tục với Google',
+                      icon: AppIcons.icGoogle,
+                      onPressed: () async {
+                        context.read<SignUpBloc>().add(const SignUpWithGoogle());
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const MyAppView()));
+                      });
+                },
+              ),
+            ),
+            hPad12,
+            // continue with facebook
             ContinueButtonWidget(
-                text: 'Continue with Google',
-                icon: AppIcons.icGoogle,
-                onPressed: () async {
-                  await signInWithGoogle();
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthMain()));
+                text: 'Tiếp tục với Facebook',
+                icon: AppIcons.icFacebook,
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const MyAppView()));
                 }),
             hPad4,
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                              create: (context) =>
+                                  SignInBloc(userRepository: context.read<AuthenticationBloc>().userRepository),
+                              child: const LoginPage(),
+                            )));
               },
               child: Container(
                 width: 337.w,
                 height: 49.h,
                 alignment: Alignment.center,
                 child: const Text(
-                  'Login',
+                  'Đăng nhập',
                   style: TextStyle(color: AppColors.white, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-            hPad24,
+            hPad32,
           ],
         ),
       ),

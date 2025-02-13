@@ -6,14 +6,15 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
 import 'package:spotify_clone/core/config/app_constant.dart';
-import 'package:spotify_clone/core/config/app_icons.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
 import 'package:spotify_clone/domain/entities/music_info.dart';
 import 'package:spotify_clone/presentaition/pages/song_player_page/lyrics_page.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+// ignore: must_be_immutable
 class SongPlayerPage extends StatefulWidget {
-  const SongPlayerPage({super.key});
+  SongPlayerPage({super.key, required this.trackId});
+  String trackId;
 
   @override
   State<SongPlayerPage> createState() => _SongPlayerPageState();
@@ -21,13 +22,11 @@ class SongPlayerPage extends StatefulWidget {
 
 class _SongPlayerPageState extends State<SongPlayerPage> {
   final player = AudioPlayer();
-  MusicInfo music = MusicInfo(trackId: '4N5J0XZhaNro1JFUbzc6oH');
+  late MusicInfo music = MusicInfo(trackId: widget.trackId);
   final spotify = SpotifyApi(SpotifyApiCredentials(AppConstant.clientId, AppConstant.clientSecret));
   @override
   void initState() {
     super.initState();
-    // final credentials = SpotifyApiCredentials(AppConstant.clientId, AppConstant.clientSecret);
-    // final spotify = SpotifyApi(credentials);
     spotify.tracks.get(music.trackId).then((track) async {
       String? tempSongName = track.name;
       if (tempSongName != null) {
@@ -42,6 +41,7 @@ class _SongPlayerPageState extends State<SongPlayerPage> {
           }
         }
         music.artistImage = track.artists?.first.images?.first.url;
+        setState(() {});
         final yt = YoutubeExplode();
         final video = (await yt.search.search("$tempSongName ${music.artistName ?? ""}")).first;
         final videoId = video.id.value;
@@ -53,6 +53,12 @@ class _SongPlayerPageState extends State<SongPlayerPage> {
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   Future<Color?> getImagePalette(ImageProvider imageProvider) async {
@@ -80,10 +86,7 @@ class _SongPlayerPageState extends State<SongPlayerPage> {
             flex: 2,
             child: Container(
               decoration: BoxDecoration(
-                // color: Colors.red,
                 image: DecorationImage(
-                  scale: 1,
-                  // image: AssetImage(AppImages.imgSong),
                   image: NetworkImage(music.songImage ?? ""),
                 ),
               ),
@@ -174,7 +177,13 @@ class _SongPlayerPageState extends State<SongPlayerPage> {
                                   )));
                     },
                     icon: const Icon(Icons.lyrics_outlined, color: Colors.white)),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.skip_previous, color: Colors.white, size: 36)),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.skip_previous,
+                      color: Colors.white,
+                      size: 36,
+                    )),
                 IconButton(
                     onPressed: () async {
                       if (player.state == PlayerState.playing) {
@@ -192,68 +201,7 @@ class _SongPlayerPageState extends State<SongPlayerPage> {
                 IconButton(onPressed: () {}, icon: const Icon(Icons.skip_next, color: Colors.white, size: 36)),
                 IconButton(onPressed: () {}, icon: const Icon(Icons.loop, color: AppColors.white, size: 24)),
               ],
-            )
-
-            // // Slider
-            // Column(
-            //   children: [
-            //     SliderTheme(
-            //       data: SliderThemeData(
-            //         trackHeight: 2,
-            //         thumbColor: AppColors.white,
-            //         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-            //         overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
-            //         overlayColor: AppColors.white.withOpacity(0.3),
-            //         activeTrackColor: AppColors.white,
-            //         inactiveTrackColor: Colors.grey,
-            //       ),
-            //       child: Slider(
-            //         value: 0.2,
-            //         onChanged: (value) {},
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // hPad4,
-
-            // // Time
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 12.w),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Text(
-            //         '1:20',
-            //         style: TextStyle(color: AppColors.white, fontSize: 12.sp),
-            //       ),
-            //       Text(
-            //         '3:20',
-            //         style: TextStyle(color: AppColors.white, fontSize: 12.sp),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // // Control
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     IconButton(
-            //       onPressed: () {},
-            //       icon: const Icon(Icons.skip_previous, color: AppColors.white),
-            //       iconSize: 40,
-            //     ),
-            //     IconButton(
-            //       onPressed: () {},
-            //       icon: const Icon(Icons.play_circle_fill, color: AppColors.white),
-            //       iconSize: 60,
-            //     ),
-            //     IconButton(
-            //       onPressed: () {},
-            //       icon: const Icon(Icons.skip_next, color: AppColors.white),
-            //       iconSize: 40,
-            //     ),
-            //   ],
-            // ),
+            ),
           ],
         ),
       ),

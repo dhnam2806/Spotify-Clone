@@ -16,6 +16,7 @@ dependencies:
   firebase_core:
   firebase_auth:
   cloud_firestore:
+  firebase_storage:
   google_sign_in:
   email_validator:
   equatable:
@@ -41,7 +42,6 @@ dependencies:
   path_provider: ^2.1.5
   image_picker: ^1.1.2
   google_nav_bar: ^5.0.6
-
 
 dev_dependencies:
   flutter_test:

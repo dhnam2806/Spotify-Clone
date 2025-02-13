@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spotify_clone/presentaition/pages/authen/auth_main.dart';
+import 'package:spotify_clone/presentaition/pages/app.dart';
 
 import '../../../core/config/app_icons.dart';
+import '../../../data/repositories/auth_reposiory/firebase_user_repository.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -34,6 +34,10 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> redirect() async {
     await Future.delayed(const Duration(seconds: 3));
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const AuthMain()));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => MainApp(FirebaseUserRepository()),
+        ));
   }
 }

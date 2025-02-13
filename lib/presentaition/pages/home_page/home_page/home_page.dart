@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_clone/core/config/app_color.dart';
@@ -8,15 +9,15 @@ import 'package:spotify_clone/core/config/app_constant.dart';
 import 'package:spotify_clone/core/config/app_size.dart';
 import 'package:spotify_clone/domain/entities/album_info.dart';
 import 'package:spotify_clone/domain/usecase/get_album_usecase.dart';
+import 'package:spotify_clone/presentaition/bloc/album_bloc/bloc/album_bloc.dart';
+import 'package:spotify_clone/presentaition/bloc/authentication_bloc/bloc/authentication_bloc.dart';
+import 'package:spotify_clone/presentaition/bloc/home_bloc/bloc/home_bloc.dart';
 import 'package:spotify_clone/presentaition/pages/album_page/album_page.dart';
 import 'package:spotify_clone/presentaition/pages/components/album_widget.dart';
-import 'package:spotify_clone/presentaition/pages/components/song_widget.dart';
-import 'package:spotify_clone/presentaition/pages/components/recommend_widget.dart';
 import 'package:spotify_clone/presentaition/pages/user_page/user_page.dart';
 import 'package:spotify_clone/timer/token_manager.dart';
 import 'package:http/http.dart' as http;
-
-import '../../song_player_page/song_player_page.dart';
+import '../../../bloc/sign_in_bloc/bloc/sign_in_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,7 +28,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final SpotifyApi spotify;
-  final token = TokenManager().token;
   late List<AlbumInfo> albumInfo = [];
   late List<AlbumInfo> albumForYou = [];
   List<String> albumIds = [
@@ -43,14 +43,12 @@ class _HomePageState extends State<HomePage> {
     final credentials = SpotifyApiCredentials(
       AppConstant.clientId,
       AppConstant.clientSecret,
-      accessToken: TokenManager().token, // Lấy access_token từ TokenManager
+      accessToken: token, // Lấy access_token từ TokenManager
     );
     spotify = SpotifyApi(credentials);
-    print(credentials.accessToken);
-    fetchNewReleases();
-    fetchAlbumsByIds(albumIds);
-    fetchPlaylist(playlistId);
-
+    // fetchNewReleases();
+    // fetchAlbumsByIds(albumIds);
+    // fetchPlaylist(playlistId);
     super.initState();
   }
 
@@ -65,7 +63,6 @@ class _HomePageState extends State<HomePage> {
     const url = 'https://api.spotify.com/v1/browse/new-releases';
 
     try {
-      // Gửi yêu cầu HTTP GET với header chứa Authorization
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -74,12 +71,8 @@ class _HomePageState extends State<HomePage> {
         },
       );
 
-      // Kiểm tra mã trạng thái trả về từ API
       if (response.statusCode == 200) {
-        // Giải mã dữ liệu JSON trả về
         final data = jsonDecode(response.body);
-
-        // Xử lý dữ liệu
         final albums = data['albums']['items'];
         for (var album in albums) {
           albumInfo.add(AlbumInfo(
@@ -96,49 +89,6 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       print('Lỗi kết nối: $e');
     }
-  }
-
-  Future<List<AlbumInfo>> fetchPlaylist(List<String> ids) async {
-    // URL cơ bản của API Spotify
-    const String baseUrl = 'https://api.spotify.com/v1/playlists';
-
-    // Danh sách lưu trữ AlbumInfo
-    List<AlbumInfo> albumInfoList = [];
-
-    try {
-      for (String id in ids) {
-        // Gửi yêu cầu HTTP GET với từng ID
-        final response = await http.get(
-          Uri.parse('$baseUrl/$id'), // Đường dẫn API với ID cụ thể
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        );
-
-        // Kiểm tra mã trạng thái phản hồi
-        if (response.statusCode == 200) {
-          // Giải mã dữ liệu JSON trả về
-          final data = jsonDecode(response.body);
-
-          // Thêm dữ liệu album vào danh sách
-          albumForYou.add(
-            AlbumInfo(
-              name: data['name'],
-              artist: data['artists'][0]['name'],
-              image: data['images'][0]['url'],
-            ),
-          );
-        } else {
-          print('Lỗi với ID: $id - ${response.statusCode}, ${response.body}');
-        }
-      }
-    } catch (e) {
-      print('Lỗi kết nối: $e');
-    }
-
-    // Trả về danh sách album đã tổng hợp
-    return albumInfoList;
   }
 
   Future<List<AlbumInfo>> fetchAlbumsByIds(List<String> ids) async {
@@ -197,69 +147,43 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const UserPage()));
-                    },
-                    child: Container(
-                      width: 24.w,
-                      height: 24.h,
-                      decoration: const BoxDecoration(
-                        color: AppColors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.person, size: 24, color: AppColors.black),
-                    ),
-                  ),
-                  wPad10,
-                  Text('Chào buổi sáng',
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.white)),
-                ],
-              ),
+              Text('Chào buổi sáng',
+                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppColors.white)),
               hPad12,
-              // const Wrap(
-              //   spacing: 8,
-              //   runSpacing: 8,
-              //   children: [
-              //     RecommendWidget(nameAlbum: 'Liked Songs'),
-              //     RecommendWidget(nameAlbum: 'Chúng ta không thuộc về nhau'),
-              //     RecommendWidget(nameAlbum: 'Có chàng trai viết lên cây'),
-              //     RecommendWidget(nameAlbum: 'Đừng làm trái tim anh đau'),
-              //   ],
-              // ),
               hPad12,
               Text(
                 'Mới phát hành',
                 style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppColors.white),
               ),
               hPad12,
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: albumInfo.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 8.w),
-                      child: GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AlbumPage(
-                                      albumInfo: albumInfo[index],
-                                    ))),
-                        child: AlbumWidget(
-                          albumInfo: albumInfo[index],
-                          // onTap: () {
-                          //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SongPlayerPage()));
-                          // },
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              BlocBuilder<HomeBloc, HomeState>(
+                buildWhen: (previous, current) => previous.newRealease != current.newRealease,
+                builder: (context, state) {
+                  albumInfo = state.newRealease;
+                  return Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: albumInfo.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 8.w),
+                          child: GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                        create: (context) => AlbumBloc(),
+                                        child: AlbumPage(albumInfo: albumInfo[index])))),
+                            child: AlbumWidget(
+                              albumInfo: albumInfo[index],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
               hPad8,
               Text(
@@ -267,30 +191,41 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppColors.white),
               ),
               hPad12,
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: albumForYou.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 8.w),
-                      child: AlbumWidget(
-                        albumInfo: albumForYou[index],
-                        // onTap: () {
-                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SongPlayerPage()));
-                        // },
-                      ),
-                    );
-                  },
-                ),
-              ),
-              hPad12,
-              SongWidget(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SongPlayerPage()));
+              BlocBuilder<HomeBloc, HomeState>(
+                buildWhen: (previous, current) => previous.albumForYou != current.albumForYou,
+                builder: (context, state) {
+                  albumForYou = state.albumForYou;
+                  return Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: albumForYou.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 8.w),
+                          child: GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                        create: (context) => AlbumBloc(),
+                                        child: AlbumPage(albumInfo: albumForYou[index])))),
+                            child: AlbumWidget(
+                              albumInfo: albumForYou[index],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 },
               ),
+              hPad12,
+              // SongWidget(
+              //   onTap: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) => const SongPlayerPage()));
+              //   },
+              // ),
             ],
           ),
         ),

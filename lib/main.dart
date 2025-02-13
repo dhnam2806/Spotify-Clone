@@ -1,13 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify_clone/timer/token_manager.dart';
 
+import 'presentaition/pages/bloc_observer.dart';
 import 'presentaition/pages/splash/splash_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  Bloc.observer = SimpleBlocObserver();
   runApp(const MyApp());
 }
 
@@ -22,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     final tokenManager = TokenManager();
-    // tokenManager.startFetchingToken();
+    tokenManager.startFetchingToken();
     super.initState();
   }
 
